@@ -4,10 +4,13 @@
   "main": "index.js",
   "repository": "https://github.com/eryson/seu-barriga.git",
   "license": "MIT",
+  "keywords": [],
+  "author": "Eryson Miranda",
   "scripts": {
     "lint": "eslint src/** __test__/** --fix"
   },
   "devDependencies": {
-    "eslint": "^7.4.0"
+    "eslint": "^7.4.0",
+    "jest": "^26.1.0"
   }
 }
