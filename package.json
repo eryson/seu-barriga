@@ -7,10 +7,15 @@
   "keywords": [],
   "author": "Eryson Miranda",
   "scripts": {
+    "test": "jest",
     "lint": "eslint src/** __test__/** --fix"
   },
   "devDependencies": {
     "eslint": "^7.4.0",
-    "jest": "^26.1.0"
+    "jest": "^26.1.0",
+    "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }
