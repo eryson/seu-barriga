@@ -7,8 +7,10 @@
   "keywords": [],
   "author": "Eryson Miranda",
   "scripts": {
+    "start": "node src/server.js",
     "test": "jest",
-    "lint": "eslint src/** __test__/** --fix"
+    "lint": "eslint src/** __test__/** --fix",
+    "secure-mode": "jest --watch --verbose=true"
   },
   "devDependencies": {
     "eslint": "^7.4.0",
