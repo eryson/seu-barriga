@@ -1,12 +1,13 @@
 {
   "name": "seu-barriga",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "repository": "https://github.com/eryson/seu-barriga.git",
   "license": "MIT",
   "keywords": [],
   "author": "Eryson Miranda",
   "scripts": {
+    "dev": "nodemon src/server.js --ignore test",
     "start": "node src/server.js",
     "test": "jest",
     "lint": "eslint src/** __test__/** --fix",
@@ -15,11 +16,16 @@
   "devDependencies": {
     "eslint": "^7.4.0",
     "jest": "^26.1.0",
+    "nodemon": "^2.0.4",
+    "sucrase": "^3.15.0",
     "supertest": "^4.0.2"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
     "consign": "^0.1.6",
-    "express": "^4.17.1"
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1"
   }
 }
