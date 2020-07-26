@@ -1,8 +1,10 @@
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
+const consign = require("consign");
 
-app.use(bodyParser.json());
+consign({ cwd: "src", verbose: false })
+  .include("./middlewares/bodyParser.js")
+  .into(app);
 
 app.get("/", (req, res) => {
   res.status(200).send();
