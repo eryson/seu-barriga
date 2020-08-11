@@ -9,11 +9,16 @@
   "scripts": {
     "dev": "nodemon src/server.js --ignore test",
     "start": "node src/server.js",
-    "test": "jest",
+    "build": "babel src --extensions \".js\" --out-dir dist --copy-files",
+    "test": "jest --runInBand --detectOpenHandles",
     "lint": "eslint src/** __test__/** --fix",
     "secure-mode": "jest --watch --verbose=true"
   },
   "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.11.0",
     "eslint": "^7.4.0",
     "jest": "^26.1.0",
     "nodemon": "^2.0.4",

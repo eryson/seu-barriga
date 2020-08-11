@@ -1,5 +1,5 @@
-const request = require("supertest");
-const app = require("../src/app");
+import request from "supertest";
+import app from "../src/app";
 
 test("Should return all users", async () => {
   const res = await request(app).get("/users");
