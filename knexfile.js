@@ -1,9 +1,9 @@
-/* eslint-disable no-undef */
+// Update with your config settings.
+
+// eslint-disable-next-line no-undef
 module.exports = {
-  test: {
+  development: {
     client: "pg",
-    version: "12",
-    // connection: "postgres://postgres:admin@localhost/seu-barriga",
     connection: {
       host: "localhost",
       user: "postgres",
@@ -12,6 +12,9 @@ module.exports = {
     },
     migrations: {
       directory: "src/database/migrations",
+    },
+    seeds: {
+      directory: "src/database/seeds",
     },
   },
 };
