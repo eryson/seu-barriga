@@ -1,7 +1,9 @@
+import knex from "../database";
+
 class UsersController {
   async index(req, res) {
     try {
-      const users = [{ name: "Jhon Doe", mail: "jhon@mail.com" }];
+      const users = await knex("users");
       return res.status(200).json(users);
     } catch (error) {
       return res.json(error);
@@ -10,8 +12,13 @@ class UsersController {
 
   async create(req, res) {
     try {
-      const users = req.body;
-      return res.status(201).json(users);
+      const { name, email, password } = req.body;
+      const user = await knex("users").insert({
+        name,
+        email,
+        password,
+      });
+      return res.status(201).json(user);
     } catch (error) {
       return res.json(error);
     }
