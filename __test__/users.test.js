@@ -4,12 +4,13 @@ import app from "../src/app";
 it("Should return all users", async () => {
   const res = await request(app).get("/users");
   expect(res.status).toBe(200);
+  expect(res.body.length).toBeGreaterThan(0);
 });
 
-it.skip("Should create a user", async () => {
+it("Should create a user", async () => {
+  const email = `${Date.now()}@mail.com`;
   const res = await request(app)
     .post("/users")
-    .send({ name: "Kylo Ren", mail: "kyle@firstorder.com" });
+    .send({ name: "Stormtroopers", email, password: "GalacticEmpire" });
   expect(res.status).toBe(201);
-  expect(res.body.name).toBe("Kylo Ren");
 });
