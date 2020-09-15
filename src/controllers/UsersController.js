@@ -13,6 +13,13 @@ class UsersController {
   async create(req, res) {
     try {
       const { name, email, password } = req.body;
+
+      if (!name) {
+        return res
+          .status(400)
+          .json({ error: "The name attribute is required." });
+      }
+
       const user = await knex("users").insert({
         name,
         email,
