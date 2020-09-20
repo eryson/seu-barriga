@@ -14,10 +14,10 @@ class UsersController {
     try {
       const { name, email, password } = req.body;
 
-      if (!name) {
+      if (!name || !email) {
         return res
           .status(400)
-          .json({ error: "The name attribute is required." });
+          .json({ error: "Data is missing for user creation." });
       }
 
       const user = await knex("users").insert({

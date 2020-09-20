@@ -23,4 +23,11 @@ describe("Users Tests", () => {
       .send({ email, password: "GalacticEmpire" });
     expect(res.status).toBe(400);
   });
+
+  it("Should not create a user without the email", async () => {
+    const res = await request(app)
+      .post("/users")
+      .send({ name: "Palpatine", password: "GalacticEmpire" });
+    expect(res.status).toBe(400);
+  });
 });
