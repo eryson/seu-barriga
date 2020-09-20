@@ -14,7 +14,7 @@ class UsersController {
     try {
       const { name, email, password } = req.body;
 
-      if (!name || !email) {
+      if (!name || !email || !password) {
         return res
           .status(400)
           .json({ error: "Data is missing for user creation." });
