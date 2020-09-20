@@ -2,6 +2,8 @@ import request from "supertest";
 import app from "../src/app";
 
 describe("Users Tests", () => {
+  const email = `${Date.now()}@mail.com`;
+
   it("Should return all users", async (done) => {
     const res = await request(app).get("/users");
     expect(res.status).toBe(200);
@@ -10,7 +12,6 @@ describe("Users Tests", () => {
   });
 
   it("Should create a user", async (done) => {
-    const email = `${Date.now()}@mail.com`;
     const res = await request(app)
       .post("/users")
       .send({ name: "Stormtroopers", email, password: "GalacticEmpire" });
@@ -39,11 +40,18 @@ describe("Users Tests", () => {
 
   it("Should not create a user without the password", async (done) => {
     const email = `${Date.now()}@mail.com`;
-    const res = await request(app)
-      .post("/users")
-      .send({ name: "Stormtroopers", email });
+    const res = await request(app).post("/users").send({ name: "Rey", email });
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Data is missing for user creation.");
+    done();
+  });
+
+  it("Should not create a user with an existing email", async (done) => {
+    const res = await request(app)
+      .post("/users")
+      .send({ name: "Kylo", email, password: "GalacticEmpire" });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("A user with this email already exists.");
     done();
   });
 });
