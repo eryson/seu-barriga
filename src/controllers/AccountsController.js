@@ -36,12 +36,28 @@ class AccountsController {
         return res.status(400).json({ error: "This account already exists." });
       }
 
-      const account = await knex("accounts").insert({
-        name,
-        user_id,
-      });
+      const account = await knex("accounts")
+        .insert({
+          name,
+          user_id,
+        })
+        .returning("id");
 
       return res.status(201).json(account);
+    } catch (error) {
+      return res.json(error);
+    }
+  }
+
+  async update(req, res) {
+    try {
+      const { id } = req.params;
+      const { name } = req.body;
+
+      const account = await knex("accounts")
+        .where({ id: id })
+        .update({ name: name });
+      return res.status(200).json(account);
     } catch (error) {
       return res.json(error);
     }

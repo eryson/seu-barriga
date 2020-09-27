@@ -2,6 +2,7 @@ import request from "supertest";
 import app from "../src/app";
 
 describe("Accounts Tests", () => {
+  const email = `${Date.now()}@mail.com`;
   let user;
 
   beforeAll(async (done) => {
@@ -33,6 +34,25 @@ describe("Accounts Tests", () => {
     expect(res.status).toBe(200);
     expect(res.body[0].name).toBe("Skywalker #1");
     expect(res.body.length).toBe(1);
+    done();
+  });
+
+  it("Should update an account by id", async (done) => {
+    const user = await request(app).post("/users").send({
+      name: "#GoEmpire",
+      email: email,
+      password: "GoEmpire",
+    });
+
+    const account = await request(app)
+      .post("/accounts")
+      .send({ name: "Empire #1", user_id: user.body[0] });
+
+    const res = await request(app)
+      .put(`/accounts/${account.body[0]}`)
+      .send({ name: "Empire #2" });
+
+    expect(res.status).toBe(200);
     done();
   });
 });
