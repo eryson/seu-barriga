@@ -20,19 +20,21 @@ class UsersController {
           .json({ error: "Data is missing for user creation." });
       }
 
-      const user = await knex("users").where({ email: email });
+      const userExists = await knex("users").where({ email: email });
 
-      if (user.length > 0) {
+      if (userExists.length > 0) {
         return res
           .status(400)
           .json({ error: "A user with this email already exists." });
       }
 
-      await knex("users").insert({
-        name,
-        email,
-        password,
-      });
+      const user = await knex("users")
+        .insert({
+          name,
+          email,
+          password,
+        })
+        .returning("id");
 
       return res.status(201).json(user);
     } catch (error) {
