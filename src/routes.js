@@ -13,6 +13,7 @@ routes.get("/", function (req, res) {
 routes.get("/users", UsersController.index);
 routes.post("/users", UsersController.create);
 
+routes.get("/accounts", AccountsController.index);
 routes.post("/accounts", AccountsController.create);
 
 export default routes;

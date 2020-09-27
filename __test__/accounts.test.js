@@ -13,6 +13,13 @@ describe("Accounts Tests", () => {
     done();
   });
 
+  it("Should return all accounts", async (done) => {
+    const res = await request(app).get("/accounts");
+    expect(res.status).toBe(200);
+    expect(res.body.length).toBeGreaterThan(0);
+    done();
+  });
+
   it("Should create an account", async (done) => {
     console.log("user => ", user.body[0]);
     const res = await request(app)

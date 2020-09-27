@@ -1,6 +1,15 @@
 import knex from "../database";
 
 class AccountsController {
+  async index(req, res) {
+    try {
+      const accounts = await knex("accounts");
+      return res.status(200).json(accounts);
+    } catch (error) {
+      return res.json(error);
+    }
+  }
+
   async create(req, res) {
     try {
       const { name, user_id } = req.body;
