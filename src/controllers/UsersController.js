@@ -1,7 +1,7 @@
 import knex from "../database";
 
 class UsersController {
-  async index(req, res) {
+  async getAll(req, res) {
     try {
       const users = await knex("users");
       return res.status(200).json(users);

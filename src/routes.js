@@ -10,10 +10,11 @@ routes.get("/", function (req, res) {
   res.sendFile(path.join(__dirname + "/index.html"));
 });
 
-routes.get("/users", UsersController.index);
+routes.get("/users", UsersController.getAll);
 routes.post("/users", UsersController.create);
 
-routes.get("/accounts", AccountsController.index);
+routes.get("/accounts", AccountsController.getAll);
+routes.get("/accounts/:id", AccountsController.getById);
 routes.post("/accounts", AccountsController.create);
 
 export default routes;

@@ -1,10 +1,20 @@
 import knex from "../database";
 
 class AccountsController {
-  async index(req, res) {
+  async getAll(req, res) {
     try {
       const accounts = await knex("accounts");
       return res.status(200).json(accounts);
+    } catch (error) {
+      return res.json(error);
+    }
+  }
+
+  async getById(req, res) {
+    try {
+      const { id } = req.params;
+      const account = await knex("accounts").where({ id: id }).select();
+      return res.status(200).json(account);
     } catch (error) {
       return res.json(error);
     }
