@@ -55,4 +55,10 @@ describe("Accounts Tests", () => {
     expect(res.status).toBe(200);
     done();
   });
+
+  it("Should delete an account by id", async (done) => {
+    const res = await request(app).delete(`/accounts/${user.body[0]}`);
+    expect(res.status).toBe(204);
+    done();
+  });
 });

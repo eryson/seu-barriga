@@ -17,5 +17,6 @@ routes.get("/accounts", AccountsController.getAll);
 routes.get("/accounts/:id", AccountsController.getById);
 routes.post("/accounts", AccountsController.create);
 routes.put("/accounts/:id", AccountsController.update);
+routes.delete("/accounts/:id", AccountsController.delete);
 
 export default routes;

@@ -62,6 +62,17 @@ class AccountsController {
       return res.json(error);
     }
   }
+
+  async delete(req, res) {
+    try {
+      const { id } = req.params;
+
+      const account = await knex("accounts").where({ id: id }).delete();
+      return res.status(204).json(account);
+    } catch (error) {
+      return res.json(error);
+    }
+  }
 }
 
 export default new AccountsController();
