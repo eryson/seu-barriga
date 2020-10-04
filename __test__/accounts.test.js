@@ -4,6 +4,7 @@ import app from "../src/app";
 describe("Accounts Tests", () => {
   const email = `${Date.now()}@mail.com`;
   let user;
+  let account;
 
   beforeAll(async (done) => {
     const email = `${Date.now()}@mail.com`;
@@ -18,6 +19,7 @@ describe("Accounts Tests", () => {
     const res = await request(app)
       .post("/accounts")
       .send({ name: "Skywalker #1", user_id: user.body[0] });
+    account = res;
     expect(res.status).toBe(201);
     done();
   });
@@ -57,7 +59,7 @@ describe("Accounts Tests", () => {
   });
 
   it("Should delete an account by id", async (done) => {
-    const res = await request(app).delete(`/accounts/${user.body[0]}`);
+    const res = await request(app).delete(`/accounts/${account.body[0]}`);
     expect(res.status).toBe(204);
     done();
   });
