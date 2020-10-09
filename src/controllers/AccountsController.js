@@ -4,6 +4,7 @@ class AccountsController {
   async getAll(req, res) {
     try {
       const accounts = await knex("accounts");
+
       return res.status(200).json(accounts);
     } catch (error) {
       return res.json(error);
@@ -14,6 +15,7 @@ class AccountsController {
     try {
       const { id } = req.params;
       const account = await knex("accounts").where({ id: id }).select();
+
       return res.status(200).json(account);
     } catch (error) {
       return res.json(error);
@@ -27,7 +29,7 @@ class AccountsController {
       if (!name || !user_id) {
         return res
           .status(400)
-          .json({ error: "Data is missing for user creation." });
+          .json({ error: "Data is missing for account creation." });
       }
 
       const accountExists = await knex("accounts").where({ user_id: user_id });
@@ -57,6 +59,7 @@ class AccountsController {
       const account = await knex("accounts")
         .where({ id: id })
         .update({ name: name });
+
       return res.status(200).json(account);
     } catch (error) {
       return res.json(error);
@@ -66,8 +69,8 @@ class AccountsController {
   async delete(req, res) {
     try {
       const { id } = req.params;
-
       const account = await knex("accounts").where({ id: id }).delete();
+
       return res.status(204).json(account);
     } catch (error) {
       return res.json(error);

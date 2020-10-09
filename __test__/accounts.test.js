@@ -18,7 +18,7 @@ describe("Accounts Tests", () => {
   it("Should create an account", async (done) => {
     const res = await request(app)
       .post("/accounts")
-      .send({ name: "Skywalker #1", user_id: user.body[0] });
+      .send({ name: "NuBank #1", user_id: user.body[0] });
     account = res;
     expect(res.status).toBe(201);
     done();
@@ -34,7 +34,7 @@ describe("Accounts Tests", () => {
   it("Should return an account by id", async (done) => {
     const res = await request(app).get("/accounts/1");
     expect(res.status).toBe(200);
-    expect(res.body[0].name).toBe("Skywalker #1");
+    expect(res.body[0].name).toBe("NuBank #1");
     expect(res.body.length).toBe(1);
     done();
   });
@@ -48,11 +48,11 @@ describe("Accounts Tests", () => {
 
     const account = await request(app)
       .post("/accounts")
-      .send({ name: "Empire #1", user_id: user.body[0] });
+      .send({ name: "Inter #1", user_id: user.body[0] });
 
     const res = await request(app)
       .put(`/accounts/${account.body[0]}`)
-      .send({ name: "Empire #2" });
+      .send({ name: "Inter #2" });
 
     expect(res.status).toBe(200);
     done();
