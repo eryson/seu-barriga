@@ -36,7 +36,7 @@ class UsersController {
           email,
           password: passwordHash,
         })
-        .returning("id");
+        .returning(["id", "name", "email", "password"]);
 
       return res.status(201).json(user);
     } catch (error) {
