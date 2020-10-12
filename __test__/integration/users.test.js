@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../src/app";
+import app from "../../src/app";
 
 describe("Users Tests", () => {
   const email = `${Date.now()}@mail.com`;
@@ -8,6 +8,7 @@ describe("Users Tests", () => {
     const res = await request(app).get("/users");
     expect(res.status).toBe(200);
     expect(res.body.length).toBeGreaterThan(0);
+    expect(res.body).not.toHaveProperty("password");
     done();
   });
 

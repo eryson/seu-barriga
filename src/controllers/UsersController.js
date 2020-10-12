@@ -1,9 +1,10 @@
 import knex from "../database";
+import bcrypt from "bcrypt";
 
 class UsersController {
   async getAll(req, res) {
     try {
-      const users = await knex("users");
+      const users = await knex("users").select(["id", "name", "email"]);
       return res.status(200).json(users);
     } catch (error) {
       return res.json(error);
@@ -28,11 +29,12 @@ class UsersController {
           .json({ error: "A user with this email already exists." });
       }
 
+      const passwordHash = await bcrypt.hash(password, 10);
       const user = await knex("users")
         .insert({
           name,
           email,
-          password,
+          password: passwordHash,
         })
         .returning("id");
 
