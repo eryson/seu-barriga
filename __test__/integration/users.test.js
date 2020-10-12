@@ -20,6 +20,19 @@ describe("Users Tests", () => {
     done();
   });
 
+  it("Should encrypt the user password", async (done) => {
+    const emailHash = `${Date.now()}@mail.com`;
+    const res = await request(app).post("/users").send({
+      name: "Stormtroopers Hash Password",
+      email: emailHash,
+      password: "GalacticEmpire",
+    });
+
+    expect(res.status).toBe(201);
+    expect(res.body.password).not.toBe("GalacticEmpire");
+    done();
+  });
+
   it("Should not create a user without the name", async (done) => {
     const email = `${Date.now()}@mail.com`;
     const res = await request(app)
