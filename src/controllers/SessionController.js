@@ -24,7 +24,9 @@ class SessionController {
         );
 
         if (!compareHash) {
-          return res.status(401).json({ message: "Incorrect data" });
+          return res
+            .status(401)
+            .json({ message: "incorrect username or password" });
         }
       }
 
