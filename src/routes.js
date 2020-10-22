@@ -1,5 +1,6 @@
 import { Router } from "express";
 import path from "path";
+import authMiddleware from "./middlewares/auth";
 import UsersController from "./controllers/UsersController";
 import AccountsController from "./controllers/AccountsController";
 import SessionController from "./controllers/SessionController";
@@ -13,6 +14,7 @@ routes.get("/", function (req, res) {
 
 routes.post("/session", SessionController.create);
 
+routes.use(authMiddleware);
 routes.get("/users", UsersController.getAll);
 routes.post("/users", UsersController.create);
 
