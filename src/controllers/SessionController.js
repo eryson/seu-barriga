@@ -16,7 +16,7 @@ class SessionController {
       const userExists = await knex("users").where({ email: email });
 
       if (userExists.length < 0) {
-        return res.status(400).json({ error: "User does not exists" });
+        return res.status(400).json({ error: "user does not exists" });
       } else {
         const compareHash = await comparePassword(
           password,
