@@ -12,7 +12,7 @@ describe("Session Tests", () => {
 
     expect(res.status).toBe(201);
 
-    const session = await request(app).post("/session").send({
+    const session = await request(app).post("/session/signin").send({
       email,
       password: "haveToken",
     });
@@ -30,7 +30,7 @@ describe("Session Tests", () => {
 
     expect(res.status).toBe(201);
 
-    const session = await request(app).post("/session").send({
+    const session = await request(app).post("/session/signin").send({
       email,
       password: "wrongPassword",
     });
@@ -41,7 +41,7 @@ describe("Session Tests", () => {
   });
 
   it("Should not authenticated when user does not exists", async (done) => {
-    const session = await request(app).post("/session").send({
+    const session = await request(app).post("/session/signin").send({
       email: "user_not_exists@mail.com",
       password: "wrongPassword",
     });

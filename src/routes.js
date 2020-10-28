@@ -12,7 +12,7 @@ routes.get("/", function (req, res) {
   res.sendFile(path.join(__dirname + "/index.html"));
 });
 
-routes.post("/session", SessionController.create);
+routes.post("/session/signin", SessionController.create);
 
 routes.use(authMiddleware);
 routes.get("/users", UsersController.getAll);
