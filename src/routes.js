@@ -3,7 +3,7 @@ import path from "path";
 import authMiddleware from "./middlewares/auth";
 import UsersController from "./controllers/UsersController";
 import AccountsController from "./controllers/AccountsController";
-import SessionController from "./controllers/SessionController";
+import AuthController from "./controllers/AuthController";
 
 const routes = new Router();
 
@@ -12,7 +12,8 @@ routes.get("/", function (req, res) {
   res.sendFile(path.join(__dirname + "/index.html"));
 });
 
-routes.post("/session/signin", SessionController.create);
+routes.post("/auth/signin", AuthController.create);
+routes.post("/auth/signup", UsersController.create);
 
 routes.use(authMiddleware);
 routes.get("/users", UsersController.getAll);

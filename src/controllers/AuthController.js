@@ -2,7 +2,7 @@ import knex from "../database";
 import comparePassword from "../utils/comparePassword";
 import generateToken from "../utils/generateToken";
 
-class SessionController {
+class AuthController {
   async create(req, res) {
     try {
       const { email, password } = req.body;
@@ -40,4 +40,4 @@ class SessionController {
   }
 }
 
-export default new SessionController();
+export default new AuthController();
