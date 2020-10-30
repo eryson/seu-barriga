@@ -1,5 +1,9 @@
 import request from "supertest";
 import app from "../../src/app";
+import generateToken from "../../src/utils/generateToken";
+import jwt from "jsonwebtoken";
+
+const testToken = generateToken();
 
 describe("Auth Tests", () => {
   it("Should create a user via signup", async (done) => {
@@ -20,7 +24,8 @@ describe("Auth Tests", () => {
 
     const res = await request(app)
       .post("/users")
-      .send({ name: "User Authenticated", email, password: "haveToken" });
+      .send({ name: "User Authenticated", email, password: "haveToken" })
+      .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(201);
 
@@ -38,7 +43,8 @@ describe("Auth Tests", () => {
 
     const res = await request(app)
       .post("/users")
-      .send({ name: "User Authenticated", email, password: "haveToken" });
+      .send({ name: "User Authenticated", email, password: "haveToken" })
+      .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(201);
 
