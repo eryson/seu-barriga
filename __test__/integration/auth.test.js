@@ -14,8 +14,8 @@ describe("Auth Tests", () => {
       .send({ name: "User Signup", email, password: "userSignup" });
 
     expect(res.status).toBe(201);
-    expect(res.body.name).toBe("User Signup");
-    expect(res.body.email).toHaveProperty(email);
+    expect(res.body[0].name).toBe("User Signup");
+    expect(res.body[0].email).toBe(email);
     done();
   });
 
@@ -54,7 +54,7 @@ describe("Auth Tests", () => {
     });
 
     expect(auth.status).toBe(401);
-    expect(auth.body.error).toBe("incorrect username or password");
+    expect(auth.body.message).toBe("incorrect username or password");
     done();
   });
 
@@ -69,9 +69,10 @@ describe("Auth Tests", () => {
     done();
   });
 
-  it("Should not be able to access private routes without jwt token", async () => {
+  it("Should not be able to access private routes without jwt token", async (done) => {
     const response = await request(app).delete("/users");
 
     expect(response.status).toBe(400);
+    done();
   });
 });
