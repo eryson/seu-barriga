@@ -24,7 +24,7 @@ describe("Accounts Tests", () => {
   it("Should create an account", async (done) => {
     const res = await request(app)
       .post("/accounts")
-      .send({ name: "NuBank #1", user_id: user.body[0] })
+      .send({ name: "NuBank #1", user: user.body[0] })
       .set("Authorization", `Bearer ${testToken}`);
 
     account = res;
@@ -48,7 +48,7 @@ describe("Accounts Tests", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(200);
-    expect(res.body[0].name).toBe("NuBank #1");
+    expect(res.body[0].name).toBe("Skywalker #1");
     expect(res.body.length).toBe(1);
     done();
   });
