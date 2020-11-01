@@ -17,7 +17,10 @@ routes.post("/auth/signup", UsersController.create);
 
 routes.use(authMiddleware);
 routes.get("/users", UsersController.getAll);
+routes.get("/users/:id", UsersController.getById);
 routes.post("/users", UsersController.create);
+routes.put("/users/:id", UsersController.update);
+routes.delete("/users/:id", UsersController.delete);
 
 routes.get("/accounts", AccountsController.getAll);
 routes.get("/accounts/:id", AccountsController.getById);

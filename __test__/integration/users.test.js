@@ -1,12 +1,23 @@
 import request from "supertest";
 import app from "../../src/app";
 import generateToken from "../../src/utils/generateToken";
-import jwt from "jsonwebtoken";
 
 const testToken = generateToken();
+let user;
 
 describe("Users Tests", () => {
   const email = `${Date.now()}@mail.com`;
+
+  it("Should create a user", async (done) => {
+    const res = await request(app)
+      .post("/users")
+      .send({ name: "Stormtroopers", email, password: "GalacticEmpire" })
+      .set("Authorization", `Bearer ${testToken}`);
+
+    user = res.body;
+    expect(res.status).toBe(201);
+    done();
+  });
 
   it("Should return all users", async (done) => {
     const res = await request(app)
@@ -19,13 +30,14 @@ describe("Users Tests", () => {
     done();
   });
 
-  it("Should create a user", async (done) => {
+  it("Should return an user by id", async (done) => {
     const res = await request(app)
-      .post("/users")
-      .send({ name: "Stormtroopers", email, password: "GalacticEmpire" })
+      .get(`/users/${user[0].id}`)
       .set("Authorization", `Bearer ${testToken}`);
 
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(200);
+    expect(res.body[0].name).toBe("Stormtroopers");
+    expect(res.body.length).toBe(1);
     done();
   });
 
@@ -88,6 +100,28 @@ describe("Users Tests", () => {
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("A user with this email already exists.");
+    done();
+  });
+
+  it("Should update an user by id", async (done) => {
+    const res = await request(app)
+      .put(`/users/${user[0].id}`)
+      .send({
+        name: "Stormtroopers Update",
+        password: "GalacticEmpireUpdate",
+      })
+      .set("Authorization", `Bearer ${testToken}`);
+
+    expect(res.status).toBe(200);
+    done();
+  });
+
+  it("Should delete an user by id", async (done) => {
+    const res = await request(app)
+      .delete(`/users/${user[0].id}`)
+      .set("Authorization", `Bearer ${testToken}`);
+
+    expect(res.status).toBe(204);
     done();
   });
 });

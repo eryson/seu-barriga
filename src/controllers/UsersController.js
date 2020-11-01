@@ -11,6 +11,17 @@ class UsersController {
     }
   }
 
+  async getById(req, res) {
+    try {
+      const { id } = req.params;
+      const user = await knex("users").where({ id: id }).select();
+
+      return res.status(200).json(user);
+    } catch (error) {
+      return res.json(error);
+    }
+  }
+
   async create(req, res) {
     try {
       const { name, email, password } = req.body;
@@ -39,6 +50,38 @@ class UsersController {
         .returning(["id", "name", "email", "password"]);
 
       return res.status(201).json(user);
+    } catch (error) {
+      return res.json(error);
+    }
+  }
+
+  async update(req, res) {
+    try {
+      const { id } = req.params;
+      const { name, email, password } = req.body;
+
+      if (!name && !email && !password) {
+        return res
+          .status(400)
+          .json({ error: "Data is missing for user update." });
+      }
+
+      const data = req.body;
+      const user = await knex("users")
+        .where({ id: id })
+        .update({ ...data });
+      return res.status(200).json(user);
+    } catch (error) {
+      return res.json(error);
+    }
+  }
+
+  async delete(req, res) {
+    try {
+      const { id } = req.params;
+      const user = await knex("users").where({ id: id }).delete();
+
+      return res.status(204).json(user);
     } catch (error) {
       return res.json(error);
     }

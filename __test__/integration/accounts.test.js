@@ -1,7 +1,6 @@
 import request from "supertest";
 import app from "../../src/app";
 import generateToken from "../../src/utils/generateToken";
-import jwt from "jsonwebtoken";
 
 const testToken = generateToken();
 
