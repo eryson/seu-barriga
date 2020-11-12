@@ -4,14 +4,18 @@ import generateToken from "../../src/utils/generateToken";
 
 const testToken = generateToken();
 let user;
+let userHash;
 
-describe("Users Tests", () => {
-  const email = `${Date.now()}@mail.com`;
-
+describe("Users Integration Tests", () => {
   it("Should create a user", async (done) => {
     const res = await request(app)
       .post("/users")
-      .send({ name: "Stormtroopers", email, password: "GalacticEmpire" })
+      .send({
+        username: "darkside",
+        name: "Darth Vader",
+        email: "darkside@theForce.com",
+        password: "Empire",
+      })
       .set("Authorization", `Bearer ${testToken}`);
 
     user = res.body;
@@ -36,32 +40,32 @@ describe("Users Tests", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(200);
-    expect(res.body[0].name).toBe("Stormtroopers");
+    expect(res.body[0].name).toBe("Darth Vader");
     expect(res.body.length).toBe(1);
     done();
   });
 
   it("Should encrypt the user password", async (done) => {
-    const emailHash = `${Date.now()}@mail.com`;
     const res = await request(app)
       .post("/users")
       .send({
-        name: "Stormtroopers Hash Password",
-        email: emailHash,
+        username: "stormtrooper",
+        name: "Stormtrooper Hash Password",
+        email: "empire.hash@mail.com",
         password: "GalacticEmpire",
       })
       .set("Authorization", `Bearer ${testToken}`);
 
+    userHash = res.body;
     expect(res.status).toBe(201);
     expect(res.body.password).not.toBe("GalacticEmpire");
     done();
   });
 
   it("Should not create a user without the name", async (done) => {
-    const email = `${Date.now()}@mail.com`;
     const res = await request(app)
       .post("/users")
-      .send({ email, password: "GalacticEmpire" })
+      .send({ username: "stormtrooper", password: "GalacticEmpire" })
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(400);
@@ -81,10 +85,9 @@ describe("Users Tests", () => {
   });
 
   it("Should not create a user without the password", async (done) => {
-    const email = `${Date.now()}@mail.com`;
     const res = await request(app)
       .post("/users")
-      .send({ name: "Rey", email })
+      .send({ name: "Rey", email: "the.force@mail.com" })
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(400);
@@ -95,7 +98,12 @@ describe("Users Tests", () => {
   it("Should not create a user with an existing email", async (done) => {
     const res = await request(app)
       .post("/users")
-      .send({ name: "Kylo", email, password: "GalacticEmpire" })
+      .send({
+        username: "kylo",
+        name: "Kylo Ren",
+        email: "darkside@theForce.com",
+        password: "GalacticEmpire",
+      })
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(400);
@@ -105,9 +113,9 @@ describe("Users Tests", () => {
 
   it("Should update an user by id", async (done) => {
     const res = await request(app)
-      .put(`/users/${user[0].id}`)
+      .put(`/users/${userHash[0].id}`)
       .send({
-        name: "Stormtroopers Update",
+        name: "Stormtrooper Update",
         password: "GalacticEmpireUpdate",
       })
       .set("Authorization", `Bearer ${testToken}`);
@@ -122,6 +130,12 @@ describe("Users Tests", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(204);
+
+    const response = await request(app)
+      .delete(`/users/${userHash[0].id}`)
+      .set("Authorization", `Bearer ${testToken}`);
+
+    expect(response.status).toBe(204);
     done();
   });
 });

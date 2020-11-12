@@ -24,9 +24,9 @@ class UsersController {
 
   async create(req, res) {
     try {
-      const { name, email, password } = req.body;
+      const { username, name, email, password } = req.body;
 
-      if (!name || !email || !password) {
+      if (!username || !name || !email || !password) {
         return res
           .status(400)
           .json({ error: "Data is missing for user creation." });
@@ -43,6 +43,7 @@ class UsersController {
       const passwordHash = await bcrypt.hash(password, 10);
       const user = await knex("users")
         .insert({
+          username,
           name,
           email,
           password: passwordHash,
