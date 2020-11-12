@@ -10,10 +10,14 @@ describe("Accounts Tests", () => {
   let account;
 
   beforeAll(async (done) => {
-    const email = `${Date.now()}@mail.com`;
     const res = await request(app)
       .post("/users")
-      .send({ name: "Darth Vader", email, password: "IAmYourFather" })
+      .send({
+        username: "darkside",
+        name: "Darth Vader",
+        email: "darkside@theForce.com",
+        password: "Empire",
+      })
       .set("Authorization", `Bearer ${testToken}`);
 
     user = res;
@@ -43,33 +47,19 @@ describe("Accounts Tests", () => {
 
   it("Should return an account by id", async (done) => {
     const res = await request(app)
-      .get("/accounts/1")
+      .get(`/accounts/${account.body[0]}`)
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(200);
-    expect(res.body[0].name).toBe("Skywalker #1");
+    expect(res.body[0].name).toBe("NuBank #1");
     expect(res.body.length).toBe(1);
     done();
   });
 
   it("Should update an account by id", async (done) => {
-    const user = await request(app)
-      .post("/users")
-      .send({
-        name: "#GoEmpire",
-        email: email,
-        password: "GoEmpire",
-      })
-      .set("Authorization", `Bearer ${testToken}`);
-
-    const account = await request(app)
-      .post("/accounts")
-      .send({ name: "Inter #1", user_id: user.body[0] })
-      .set("Authorization", `Bearer ${testToken}`);
-
     const res = await request(app)
       .put(`/accounts/${account.body[0]}`)
-      .send({ name: "Inter #2" })
+      .send({ name: "Inter #1" })
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(200);
@@ -82,6 +72,13 @@ describe("Accounts Tests", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(204);
+
+    const response = await request(app)
+      .delete(`/users/${user.body[0].id}`)
+      .set("Authorization", `Bearer ${testToken}`);
+
+    expect(response.status).toBe(204);
+
     done();
   });
 });
