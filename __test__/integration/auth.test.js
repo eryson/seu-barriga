@@ -1,37 +1,30 @@
 import request from "supertest";
 import app from "../../src/app";
 import generateToken from "../../src/utils/generateToken";
-import jwt from "jsonwebtoken";
 
 const testToken = generateToken();
+let user;
 
 describe("Auth Tests", () => {
   it("Should create a user via signup", async (done) => {
-    const email = `${Date.now()}@mail.com`;
+    const res = await request(app).post("/auth/signup").send({
+      username: "user",
+      name: "User Signup",
+      email: "user.signup@mail.com",
+      password: "userSignup",
+    });
 
-    const res = await request(app)
-      .post("/auth/signup")
-      .send({ name: "User Signup", email, password: "userSignup" });
-
+    user = res.body;
     expect(res.status).toBe(201);
     expect(res.body[0].name).toBe("User Signup");
-    expect(res.body[0].email).toBe(email);
+    expect(res.body[0].email).toBe("user.signup@mail.com");
     done();
   });
 
   it("Should return jwt token when authenticated", async (done) => {
-    const email = `${Date.now()}@mail.com`;
-
-    const res = await request(app)
-      .post("/users")
-      .send({ name: "User Authenticated", email, password: "haveToken" })
-      .set("Authorization", `Bearer ${testToken}`);
-
-    expect(res.status).toBe(201);
-
     const auth = await request(app).post("/auth/signin").send({
-      email,
-      password: "haveToken",
+      email: user[0].email,
+      password: "userSignup",
     });
 
     expect(auth.body).toHaveProperty("token");
@@ -39,17 +32,8 @@ describe("Auth Tests", () => {
   });
 
   it("Should not authenticated when wrong password", async (done) => {
-    const email = `${Date.now()}@mail.com`;
-
-    const res = await request(app)
-      .post("/users")
-      .send({ name: "User Authenticated", email, password: "haveToken" })
-      .set("Authorization", `Bearer ${testToken}`);
-
-    expect(res.status).toBe(201);
-
     const auth = await request(app).post("/auth/signin").send({
-      email,
+      email: user[0].email,
       password: "wrongPassword",
     });
 
@@ -73,6 +57,12 @@ describe("Auth Tests", () => {
     const response = await request(app).delete("/users");
 
     expect(response.status).toBe(400);
+
+    const res = await request(app)
+      .delete(`/users/${user[0].id}`)
+      .set("Authorization", `Bearer ${testToken}`);
+
+    expect(res.status).toBe(204);
     done();
   });
 });
