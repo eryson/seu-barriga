@@ -35,7 +35,7 @@ class AuthController {
         token: generateToken({ id: userExists.id, admin: userExists.admin }),
       });
     } catch (error) {
-      return res.json(error);
+      return res.status(400).json(error.message);
     }
   }
 }

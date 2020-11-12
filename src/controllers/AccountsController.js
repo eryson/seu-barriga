@@ -7,7 +7,7 @@ class AccountsController {
 
       return res.status(200).json(accounts);
     } catch (error) {
-      return res.json(error);
+      return res.status(400).json(error.message);
     }
   }
 
@@ -18,7 +18,7 @@ class AccountsController {
 
       return res.status(200).json(account);
     } catch (error) {
-      return res.json(error);
+      return res.status(400).json(error.message);
     }
   }
 
@@ -47,7 +47,7 @@ class AccountsController {
 
       return res.status(201).json(account);
     } catch (error) {
-      return res.json(error);
+      return res.status(400).json(error.message);
     }
   }
 
@@ -62,7 +62,7 @@ class AccountsController {
 
       return res.status(200).json(account);
     } catch (error) {
-      return res.json(error);
+      return res.status(400).json(error.message);
     }
   }
 
@@ -73,7 +73,7 @@ class AccountsController {
 
       return res.status(204).json(account);
     } catch (error) {
-      return res.json(error);
+      return res.status(400).json(error.message);
     }
   }
 }

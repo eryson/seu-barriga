@@ -7,7 +7,7 @@ class UsersController {
       const users = await knex("users").select(["id", "name", "email"]);
       return res.status(200).json(users);
     } catch (error) {
-      return res.json(error);
+      return res.status(400).json(error.message);
     }
   }
 
@@ -18,7 +18,7 @@ class UsersController {
 
       return res.status(200).json(user);
     } catch (error) {
-      return res.json(error);
+      return res.status(400).json(error.message);
     }
   }
 
@@ -51,7 +51,7 @@ class UsersController {
 
       return res.status(201).json(user);
     } catch (error) {
-      return res.json(error);
+      return res.status(400).json(error.message);
     }
   }
 
@@ -72,7 +72,7 @@ class UsersController {
         .update({ ...data });
       return res.status(200).json(user);
     } catch (error) {
-      return res.json(error);
+      return res.status(400).json(error.message);
     }
   }
 
@@ -83,7 +83,7 @@ class UsersController {
 
       return res.status(204).json(user);
     } catch (error) {
-      return res.json(error);
+      return res.status(400).json(error.message);
     }
   }
 }
