@@ -5,7 +5,6 @@ import generateToken from "../../src/utils/generateToken";
 const testToken = generateToken();
 
 describe("Accounts Tests", () => {
-  const email = `${Date.now()}@mail.com`;
   let user;
   let account;
 
