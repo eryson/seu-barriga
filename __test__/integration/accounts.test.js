@@ -40,7 +40,7 @@ describe("Accounts Tests", () => {
   it("Should create an account", async (done) => {
     const res = await request(app)
       .post("/accounts")
-      .send({ name: "NuBank #1", user: user.body[0] })
+      .send({ name: "NuBank #1", user: user.body[0].id })
       .set("Authorization", `Bearer ${token}`);
 
     account = res;
@@ -82,7 +82,7 @@ describe("Accounts Tests", () => {
   it("Should list only user accounts", async (done) => {
     const res = await request(app)
       .post("/accounts")
-      .send({ name: "NuBank #1", user: secondaryUser.body[0] })
+      .send({ name: "NuBank #1", user: secondaryUser.body[0].id })
       .set("Authorization", `Bearer ${token}`);
 
     secondaryAccount = res;
@@ -96,6 +96,19 @@ describe("Accounts Tests", () => {
     expect(response.body[0].name).toBe("NuBank #1");
     expect(response.body.length).toBe(1);
 
+    done();
+  });
+
+  it("Should not insert an account with a duplicate name for the same user", async (done) => {
+    const response = await request(app)
+      .post("/accounts")
+      .send({ name: "NuBank #1", user: secondaryUser.body[0].id })
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe(
+      "This account already exists for this user."
+    );
     done();
   });
 

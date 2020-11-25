@@ -32,16 +32,21 @@ class AccountsController {
           .json({ error: "Data is missing for account creation." });
       }
 
-      const accountExists = await knex("accounts").where({ user_id: user.id });
+      const accountExists = await knex("accounts").where({
+        name: name,
+        user_id: user,
+      });
 
       if (accountExists.length > 0) {
-        return res.status(400).json({ error: "This account already exists." });
+        return res
+          .status(400)
+          .json({ error: "This account already exists for this user." });
       }
 
       const account = await knex("accounts")
         .insert({
           name,
-          user_id: user.id,
+          user_id: user,
         })
         .returning("id");
 
