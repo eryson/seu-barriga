@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 require("dotenv").config();
 
 // eslint-disable-next-line no-undef
