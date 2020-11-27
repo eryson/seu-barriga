@@ -1,9 +1,8 @@
 import request from "supertest";
 import app from "../../src/app";
-import generateToken from "../../src/utils/generateToken";
 
-const testToken = generateToken();
 let user;
+let token;
 
 describe("Auth Tests", () => {
   it("Should create a user via signup", async (done) => {
@@ -18,6 +17,13 @@ describe("Auth Tests", () => {
     expect(res.status).toBe(201);
     expect(res.body[0].name).toBe("User Signup");
     expect(res.body[0].email).toBe("user.signup@mail.com");
+
+    const response = await request(app).post("/auth/signin").send({
+      email: "user.signup@mail.com",
+      password: "userSignup",
+    });
+
+    token = response.body.token;
     done();
   });
 
@@ -60,7 +66,7 @@ describe("Auth Tests", () => {
 
     const res = await request(app)
       .delete(`/users/${user[0].id}`)
-      .set("Authorization", `Bearer ${testToken}`);
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(204);
     done();
