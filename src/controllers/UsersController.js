@@ -68,6 +68,11 @@ class UsersController {
       }
 
       const data = req.body;
+
+      if (data.password) {
+        data.password = await bcrypt.hash(password, 10);
+      }
+
       const user = await knex("users")
         .where({ id: id })
         .update({ ...data });

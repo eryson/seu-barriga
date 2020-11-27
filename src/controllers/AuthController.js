@@ -13,15 +13,12 @@ class AuthController {
           .json({ error: "Data is missing for user auth." });
       }
 
-      const userExists = await knex("users").where({ email: email });
+      const user = await knex("users").where({ email: email });
 
-      if (userExists.length <= 0) {
+      if (user.length <= 0) {
         return res.status(400).json({ error: "user does not exists" });
       } else {
-        const compareHash = await comparePassword(
-          password,
-          userExists[0].password
-        );
+        const compareHash = await comparePassword(password, user[0].password);
 
         if (!compareHash) {
           return res
@@ -31,8 +28,8 @@ class AuthController {
       }
 
       return res.json({
-        userExists,
-        token: generateToken({ id: userExists.id, admin: userExists.admin }),
+        user,
+        token: generateToken({ id: user[0].id }),
       });
     } catch (error) {
       return res.status(400).json(error.message);
