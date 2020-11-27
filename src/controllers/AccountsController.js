@@ -14,7 +14,15 @@ class AccountsController {
   async getById(req, res) {
     try {
       const { id } = req.params;
+      const { authenticatedUserId } = req;
+
       const account = await knex("accounts").where({ id: id }).select();
+
+      if (authenticatedUserId !== account[0].user_id) {
+        return res
+          .status(403)
+          .json({ error: "Request not allowed for this user." });
+      }
 
       return res.status(200).json(account);
     } catch (error) {
@@ -60,6 +68,15 @@ class AccountsController {
     try {
       const { id } = req.params;
       const { name } = req.body;
+      const { authenticatedUserId } = req;
+
+      const hasAccount = await knex("accounts").where({ id: id }).select();
+
+      if (authenticatedUserId !== hasAccount[0].user_id) {
+        return res
+          .status(403)
+          .json({ error: "Request not allowed for this user." });
+      }
 
       const account = await knex("accounts")
         .where({ id: id })
@@ -74,6 +91,16 @@ class AccountsController {
   async delete(req, res) {
     try {
       const { id } = req.params;
+      const { authenticatedUserId } = req;
+
+      const hasAccount = await knex("accounts").where({ id: id }).select();
+
+      if (authenticatedUserId !== hasAccount[0].user_id) {
+        return res
+          .status(403)
+          .json({ error: "Request not allowed for this user." });
+      }
+
       const account = await knex("accounts").where({ id: id }).delete();
 
       return res.status(204).json(account);

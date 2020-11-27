@@ -86,10 +86,10 @@ describe("Accounts Tests", () => {
     done();
   });
 
-  it("Should list only user accounts", async (done) => {
+  it("Should not list another user's accounts", async (done) => {
     const res = await request(app)
       .post("/accounts")
-      .send({ name: "NuBank #1", user: secondaryUser[0].id })
+      .send({ name: "NuBank #2", user: secondaryUser[0].id })
       .set("Authorization", `Bearer ${token}`);
 
     secondaryAccount = res;
@@ -99,9 +99,8 @@ describe("Accounts Tests", () => {
       .get(`/accounts/${secondaryAccount.body[0]}`)
       .set("Authorization", `Bearer ${token}`);
 
-    expect(response.status).toBe(200);
-    expect(response.body[0].name).toBe("NuBank #1");
-    expect(response.body.length).toBe(1);
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe("Request not allowed for this user.");
 
     done();
   });
@@ -109,7 +108,7 @@ describe("Accounts Tests", () => {
   it("Should not insert an account with a duplicate name for the same user", async (done) => {
     const response = await request(app)
       .post("/accounts")
-      .send({ name: "NuBank #1", user: secondaryUser[0].id })
+      .send({ name: "Inter #1", user: user[0].id })
       .set("Authorization", `Bearer ${token}`);
 
     expect(response.status).toBe(400);
