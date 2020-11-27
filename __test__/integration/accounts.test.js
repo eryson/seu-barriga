@@ -1,46 +1,53 @@
 import request from "supertest";
 import app from "../../src/app";
-import generateToken from "../../src/utils/generateToken";
 
-const token = generateToken();
+let token;
+let secondaryToken;
+let user;
+let account;
+let secondaryUser;
+let secondaryAccount;
 
 describe("Accounts Tests", () => {
-  let user;
-  let account;
-  let secondaryUser;
-  let secondaryAccount;
-
   beforeAll(async (done) => {
-    const response = await request(app)
-      .post("/users")
-      .send({
-        username: "user_test",
-        name: "User Test",
-        email: "user_test@mail.com",
-        password: "userTest",
-      })
-      .set("Authorization", `Bearer ${token}`);
+    const userResponse = await request(app).post("/auth/signup").send({
+      username: "user_test",
+      name: "User Test",
+      email: "user_test@mail.com",
+      password: "userTest",
+    });
 
-    user = response;
+    user = userResponse.body;
 
-    const responseSecondaryUser = await request(app)
-      .post("/users")
-      .send({
-        username: "secondary_user",
-        name: "Secondary User",
-        email: "secondary_user@mail.com",
-        password: "secondaryUser",
-      })
-      .set("Authorization", `Bearer ${token}`);
+    const secondaryUserResponse = await request(app).post("/auth/signup").send({
+      username: "secondary_user",
+      name: "Secondary User",
+      email: "secondary_user@mail.com",
+      password: "secondaryUser",
+    });
 
-    secondaryUser = responseSecondaryUser;
+    secondaryUser = secondaryUserResponse.body;
+
+    const res = await request(app).post("/auth/signin").send({
+      email: "user_test@mail.com",
+      password: "userTest",
+    });
+
+    token = res.body.token;
+
+    const response = await request(app).post("/auth/signin").send({
+      email: "secondary_user@mail.com",
+      password: "secondaryUser",
+    });
+
+    secondaryToken = response.body.token;
     done();
   });
 
   it("Should create an account", async (done) => {
     const res = await request(app)
       .post("/accounts")
-      .send({ name: "NuBank #1", user: user.body[0].id })
+      .send({ name: "NuBank #1", user: user[0].id })
       .set("Authorization", `Bearer ${token}`);
 
     account = res;
@@ -82,7 +89,7 @@ describe("Accounts Tests", () => {
   it("Should list only user accounts", async (done) => {
     const res = await request(app)
       .post("/accounts")
-      .send({ name: "NuBank #1", user: secondaryUser.body[0].id })
+      .send({ name: "NuBank #1", user: secondaryUser[0].id })
       .set("Authorization", `Bearer ${token}`);
 
     secondaryAccount = res;
@@ -102,7 +109,7 @@ describe("Accounts Tests", () => {
   it("Should not insert an account with a duplicate name for the same user", async (done) => {
     const response = await request(app)
       .post("/accounts")
-      .send({ name: "NuBank #1", user: secondaryUser.body[0].id })
+      .send({ name: "NuBank #1", user: secondaryUser[0].id })
       .set("Authorization", `Bearer ${token}`);
 
     expect(response.status).toBe(400);
@@ -121,19 +128,19 @@ describe("Accounts Tests", () => {
 
     const responseSecondaryAccount = await request(app)
       .delete(`/accounts/${secondaryAccount.body[0]}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${secondaryToken}`);
 
     expect(responseSecondaryAccount.status).toBe(204);
 
     const responseUser = await request(app)
-      .delete(`/users/${user.body[0].id}`)
+      .delete(`/users/${user[0].id}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(responseUser.status).toBe(204);
 
     const responseSecondaryUser = await request(app)
-      .delete(`/users/${secondaryUser.body[0].id}`)
-      .set("Authorization", `Bearer ${token}`);
+      .delete(`/users/${secondaryUser[0].id}`)
+      .set("Authorization", `Bearer ${secondaryToken}`);
 
     expect(responseSecondaryUser.status).toBe(204);
 
