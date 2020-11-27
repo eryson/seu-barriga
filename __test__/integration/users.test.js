@@ -11,10 +11,10 @@ describe("Users Integration Tests", () => {
     const res = await request(app)
       .post("/users")
       .send({
-        username: "darkside",
-        name: "Darth Vader",
-        email: "darkside@theForce.com",
-        password: "Empire",
+        username: "user_test",
+        name: "User Test",
+        email: "user_test@mail.com",
+        password: "userTest",
       })
       .set("Authorization", `Bearer ${testToken}`);
 
@@ -40,7 +40,7 @@ describe("Users Integration Tests", () => {
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(200);
-    expect(res.body[0].name).toBe("Darth Vader");
+    expect(res.body[0].name).toBe("User Test");
     expect(res.body.length).toBe(1);
     done();
   });
@@ -49,23 +49,23 @@ describe("Users Integration Tests", () => {
     const res = await request(app)
       .post("/users")
       .send({
-        username: "stormtrooper",
-        name: "Stormtrooper Hash Password",
-        email: "empire.hash@mail.com",
-        password: "GalacticEmpire",
+        username: "user_test_encrypt",
+        name: "User Test Encrypt",
+        email: "user_test_encrypt@mail.com",
+        password: "userTestEncrypt",
       })
       .set("Authorization", `Bearer ${testToken}`);
 
     userHash = res.body;
     expect(res.status).toBe(201);
-    expect(res.body.password).not.toBe("GalacticEmpire");
+    expect(res.body.password).not.toBe("userTestEncrypt");
     done();
   });
 
   it("Should not create a user without the name", async (done) => {
     const res = await request(app)
       .post("/users")
-      .send({ username: "stormtrooper", password: "GalacticEmpire" })
+      .send({ username: "notCreateUser", password: "passwordUser" })
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(400);
@@ -76,7 +76,7 @@ describe("Users Integration Tests", () => {
   it("Should not create a user without the email", async (done) => {
     const res = await request(app)
       .post("/users")
-      .send({ name: "Palpatine", password: "GalacticEmpire" })
+      .send({ name: "Not Create User", password: "passwordUser" })
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(400);
@@ -87,7 +87,7 @@ describe("Users Integration Tests", () => {
   it("Should not create a user without the password", async (done) => {
     const res = await request(app)
       .post("/users")
-      .send({ name: "Rey", email: "the.force@mail.com" })
+      .send({ name: "Not Create User", email: "not_create_user@mail.com" })
       .set("Authorization", `Bearer ${testToken}`);
 
     expect(res.status).toBe(400);
@@ -99,10 +99,10 @@ describe("Users Integration Tests", () => {
     const res = await request(app)
       .post("/users")
       .send({
-        username: "kylo",
-        name: "Kylo Ren",
-        email: "darkside@theForce.com",
-        password: "GalacticEmpire",
+        username: "another_user_test",
+        name: "Another User Test",
+        email: "user_test@mail.com",
+        password: "AnotherUserTest",
       })
       .set("Authorization", `Bearer ${testToken}`);
 
@@ -115,8 +115,8 @@ describe("Users Integration Tests", () => {
     const res = await request(app)
       .put(`/users/${userHash[0].id}`)
       .send({
-        name: "Stormtrooper Update",
-        password: "GalacticEmpireUpdate",
+        name: "User Test Update",
+        password: "passwordUpdate",
       })
       .set("Authorization", `Bearer ${testToken}`);
 
