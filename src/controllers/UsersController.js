@@ -14,6 +14,14 @@ class UsersController {
   async getById(req, res) {
     try {
       const { id } = req.params;
+      const { authenticatedUserId } = req;
+
+      if (authenticatedUserId !== parseInt(id)) {
+        return res
+          .status(403)
+          .json({ error: "Request not allowed for this user." });
+      }
+
       const user = await knex("users").where({ id: id }).select();
 
       return res.status(200).json(user);
@@ -60,6 +68,13 @@ class UsersController {
     try {
       const { id } = req.params;
       const { name, email, password } = req.body;
+      const { authenticatedUserId } = req;
+
+      if (authenticatedUserId !== parseInt(id)) {
+        return res
+          .status(403)
+          .json({ error: "Request not allowed for this user." });
+      }
 
       if (!name && !email && !password) {
         return res
@@ -85,6 +100,14 @@ class UsersController {
   async delete(req, res) {
     try {
       const { id } = req.params;
+      const { authenticatedUserId } = req;
+
+      if (authenticatedUserId !== parseInt(id)) {
+        return res
+          .status(403)
+          .json({ error: "Request not allowed for this user." });
+      }
+
       const user = await knex("users").where({ id: id }).delete();
 
       return res.status(204).json(user);

@@ -1,32 +1,36 @@
 import request from "supertest";
 import app from "../../src/app";
-import generateToken from "../../src/utils/generateToken";
 
-const testToken = generateToken();
+let token;
 let user;
-let userHash;
+let secondaryUser;
+let secondaryToken;
 
 describe("Users Integration Tests", () => {
   it("Should create a user", async (done) => {
-    const res = await request(app)
-      .post("/users")
-      .send({
-        username: "user_test",
-        name: "User Test",
-        email: "user_test@mail.com",
-        password: "userTest",
-      })
-      .set("Authorization", `Bearer ${testToken}`);
+    const res = await request(app).post("/auth/signup").send({
+      username: "user_test",
+      name: "User Test",
+      email: "user_test@mail.com",
+      password: "userTest",
+    });
 
     user = res.body;
     expect(res.status).toBe(201);
+
+    const response = await request(app).post("/auth/signin").send({
+      email: "user_test@mail.com",
+      password: "userTest",
+    });
+
+    token = response.body.token;
     done();
   });
 
   it("Should return all users", async (done) => {
     const res = await request(app)
       .get("/users")
-      .set("Authorization", `Bearer ${testToken}`);
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(200);
     expect(res.body.length).toBeGreaterThan(0);
@@ -37,7 +41,7 @@ describe("Users Integration Tests", () => {
   it("Should return an user by id", async (done) => {
     const res = await request(app)
       .get(`/users/${user[0].id}`)
-      .set("Authorization", `Bearer ${testToken}`);
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(200);
     expect(res.body[0].name).toBe("User Test");
@@ -54,11 +58,18 @@ describe("Users Integration Tests", () => {
         email: "user_test_encrypt@mail.com",
         password: "userTestEncrypt",
       })
-      .set("Authorization", `Bearer ${testToken}`);
+      .set("Authorization", `Bearer ${token}`);
 
-    userHash = res.body;
+    secondaryUser = res.body;
     expect(res.status).toBe(201);
     expect(res.body.password).not.toBe("userTestEncrypt");
+
+    const response = await request(app).post("/auth/signin").send({
+      email: "user_test_encrypt@mail.com",
+      password: "userTestEncrypt",
+    });
+
+    secondaryToken = response.body.token;
     done();
   });
 
@@ -66,7 +77,7 @@ describe("Users Integration Tests", () => {
     const res = await request(app)
       .post("/users")
       .send({ username: "notCreateUser", password: "passwordUser" })
-      .set("Authorization", `Bearer ${testToken}`);
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Data is missing for user creation.");
@@ -77,7 +88,7 @@ describe("Users Integration Tests", () => {
     const res = await request(app)
       .post("/users")
       .send({ name: "Not Create User", password: "passwordUser" })
-      .set("Authorization", `Bearer ${testToken}`);
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Data is missing for user creation.");
@@ -88,7 +99,7 @@ describe("Users Integration Tests", () => {
     const res = await request(app)
       .post("/users")
       .send({ name: "Not Create User", email: "not_create_user@mail.com" })
-      .set("Authorization", `Bearer ${testToken}`);
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Data is missing for user creation.");
@@ -104,7 +115,7 @@ describe("Users Integration Tests", () => {
         email: "user_test@mail.com",
         password: "AnotherUserTest",
       })
-      .set("Authorization", `Bearer ${testToken}`);
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("A user with this email already exists.");
@@ -113,12 +124,11 @@ describe("Users Integration Tests", () => {
 
   it("Should update an user by id", async (done) => {
     const res = await request(app)
-      .put(`/users/${userHash[0].id}`)
+      .put(`/users/${user[0].id}`)
       .send({
         name: "User Test Update",
-        password: "passwordUpdate",
       })
-      .set("Authorization", `Bearer ${testToken}`);
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(200);
     done();
@@ -127,13 +137,13 @@ describe("Users Integration Tests", () => {
   it("Should delete an user by id", async (done) => {
     const res = await request(app)
       .delete(`/users/${user[0].id}`)
-      .set("Authorization", `Bearer ${testToken}`);
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(204);
 
     const response = await request(app)
-      .delete(`/users/${userHash[0].id}`)
-      .set("Authorization", `Bearer ${testToken}`);
+      .delete(`/users/${secondaryUser[0].id}`)
+      .set("Authorization", `Bearer ${secondaryToken}`);
 
     expect(response.status).toBe(204);
     done();
