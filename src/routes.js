@@ -4,6 +4,7 @@ import authMiddleware from "./middlewares/auth";
 import UsersController from "./controllers/UsersController";
 import AccountsController from "./controllers/AccountsController";
 import AuthController from "./controllers/AuthController";
+import TransactionsController from "./controllers/TransactionsController";
 
 const routes = new Router();
 
@@ -27,5 +28,8 @@ routes.get("/accounts/:id", AccountsController.getById);
 routes.post("/accounts", AccountsController.create);
 routes.put("/accounts/:id", AccountsController.update);
 routes.delete("/accounts/:id", AccountsController.delete);
+
+routes.get("/transactions", TransactionsController.getAll);
+routes.get("/user/transactions", TransactionsController.getById);
 
 export default routes;
