@@ -93,6 +93,21 @@ class AccountsController {
       const { id } = req.params;
       const { authenticatedUserId } = req;
 
+      const hasTransactions = await knex("transactions")
+        .join("accounts", "accounts.id", "acc_id")
+        .where({
+          "accounts.user_id": authenticatedUserId,
+          "transactions.id": id,
+        })
+        .select();
+
+      if (hasTransactions.length > 0) {
+        return res.status(403).json({
+          error:
+            "This account could not be deleted because it has transactions.",
+        });
+      }
+
       const hasAccount = await knex("accounts").where({ id: id }).select();
 
       if (authenticatedUserId !== hasAccount[0].user_id) {

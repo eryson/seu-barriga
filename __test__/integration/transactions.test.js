@@ -244,6 +244,19 @@ describe("Transactions Integration Tests", () => {
     done();
   });
 
+  it("Should not delete an account that has transactions", async (done) => {
+    const response = await request(app)
+      .delete(`/accounts/${userTransaction[0].id}`)
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe(
+      "This account could not be deleted because it has transactions."
+    );
+
+    done();
+  });
+
   it("Should delete a transaction", async (done) => {
     const res = await request(app)
       .delete(`/transactions/${userTransaction[0].id}`)
