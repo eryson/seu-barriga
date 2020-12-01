@@ -133,6 +133,24 @@ describe("Transactions Integration Tests", () => {
     done();
   });
 
+  it("Should not create a transaction without description", async (done) => {
+    const response = await request(app)
+      .post("/transactions")
+      .send({
+        date: new Date(),
+        ammount: 5000,
+        type: "I",
+        acc_id: account.id,
+      })
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe(
+      "Data is missing for creating the transaction."
+    );
+    done();
+  });
+
   it("Should return a transaction by id", async (done) => {
     const response = await request(app)
       .get(`/transactions/${userTransaction[0].id}`)
