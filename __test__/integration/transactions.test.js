@@ -143,6 +143,18 @@ describe("Transactions Integration Tests", () => {
     done();
   });
 
+  it("Should not list another user's transactions", async (done) => {
+    const response = await request(app)
+      .get(`/transactions/${userTransaction[0].id}`)
+      .set("Authorization", `Bearer ${secondaryUserToken}`);
+    // .set("Authorization", `Bearer ${userToken}`);
+
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe("Request not allowed for this user.");
+
+    done();
+  });
+
   it("Should update a transaction by id", async (done) => {
     const response = await request(app)
       .put(`/transactions/${userTransaction[0].id}`)

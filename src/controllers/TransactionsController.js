@@ -16,10 +16,13 @@ class UsersController {
 
       const isUserTransactions = await knex("transactions")
         .join("accounts", "accounts.id", "acc_id")
-        .where({ "accounts.user_id": authenticatedUserId })
+        .where({
+          "accounts.user_id": authenticatedUserId,
+          "transactions.id": id,
+        })
         .select();
 
-      if (!isUserTransactions) {
+      if (isUserTransactions.length === 0) {
         return res
           .status(403)
           .json({ error: "Request not allowed for this user." });
@@ -82,10 +85,13 @@ class UsersController {
 
       const isUserTransactions = await knex("transactions")
         .join("accounts", "accounts.id", "acc_id")
-        .where({ "accounts.user_id": authenticatedUserId })
+        .where({
+          "accounts.user_id": authenticatedUserId,
+          "transactions.id": id,
+        })
         .select();
 
-      if (!isUserTransactions) {
+      if (isUserTransactions.length === 0) {
         return res
           .status(403)
           .json({ error: "Request not allowed for this user." });
@@ -117,10 +123,13 @@ class UsersController {
 
       const isUserTransactions = await knex("transactions")
         .join("accounts", "accounts.id", "acc_id")
-        .where({ "accounts.user_id": authenticatedUserId })
+        .where({
+          "accounts.user_id": authenticatedUserId,
+          "transactions.id": id,
+        })
         .select();
 
-      if (!isUserTransactions) {
+      if (isUserTransactions.length === 0) {
         return res
           .status(403)
           .json({ error: "Request not allowed for this user." });
