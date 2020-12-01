@@ -9,6 +9,7 @@ let secondaryUser;
 let account;
 let secondaryAccount;
 let transaction;
+let userTransaction;
 let secondaryTransaction;
 
 describe("Transactions Integration Tests", () => {
@@ -111,6 +112,24 @@ describe("Transactions Integration Tests", () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(1);
     expect(response.body[0].description).toBe("Transaction #1");
+    done();
+  });
+
+  it("Should create a transaction", async (done) => {
+    const response = await request(app)
+      .post("/transactions")
+      .send({
+        description: "User Transaction #1",
+        date: new Date(),
+        ammount: 5000,
+        type: "I",
+        acc_id: account.id,
+      })
+      .set("Authorization", `Bearer ${userToken}`);
+
+    userTransaction = response.body;
+    expect(response.status).toBe(201);
+    expect(response.body[0].acc_id).toBe(account.id);
     done();
   });
 });

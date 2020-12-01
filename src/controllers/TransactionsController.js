@@ -26,7 +26,25 @@ class UsersController {
 
   async create(req, res) {
     try {
-      return res.status(201).json("create");
+      const { description, date, ammount, type, acc_id } = req.body;
+
+      if (!description || !date || !ammount || !type || !acc_id) {
+        return res
+          .status(400)
+          .json({ error: "Data is missing for creating the transaction." });
+      }
+
+      const transaction = await knex("transactions")
+        .insert({
+          description,
+          date,
+          ammount,
+          type,
+          acc_id,
+        })
+        .returning(["id", "description", "date", "ammount", "type", "acc_id"]);
+
+      return res.status(201).json(transaction);
     } catch (error) {
       return res.status(400).json(error.message);
     }
