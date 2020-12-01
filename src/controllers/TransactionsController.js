@@ -55,6 +55,18 @@ class UsersController {
     try {
       const { description, date, ammount, type, acc_id } = req.body;
 
+      if (ammount < 0 && type === "I") {
+        return res
+          .status(400)
+          .json({ error: "Incoming transactions must be positive." });
+      }
+
+      if (ammount > 0 && type === "O") {
+        return res
+          .status(400)
+          .json({ error: "Outgoing transactions must be negative." });
+      }
+
       if (!description || !date || !ammount || !type || !acc_id) {
         return res
           .status(400)

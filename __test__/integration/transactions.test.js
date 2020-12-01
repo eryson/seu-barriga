@@ -181,6 +181,40 @@ describe("Transactions Integration Tests", () => {
     done();
   });
 
+  it("Incoming transactions must be positive", async (done) => {
+    const response = await request(app)
+      .post("/transactions")
+      .send({
+        description: "Positive Transaction #1",
+        date: new Date(),
+        ammount: -1000,
+        type: "I",
+        acc_id: account.id,
+      })
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("Incoming transactions must be positive.");
+    done();
+  });
+
+  it("Outgoing transactions must be negative", async (done) => {
+    const response = await request(app)
+      .post("/transactions")
+      .send({
+        description: "Positive Transaction #1",
+        date: new Date(),
+        ammount: 1000,
+        type: "O",
+        acc_id: account.id,
+      })
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("Outgoing transactions must be negative.");
+    done();
+  });
+
   it("Should not delete another user's transactions", async (done) => {
     const response = await request(app)
       .delete(`/transactions/${userTransaction[0].id}`)
