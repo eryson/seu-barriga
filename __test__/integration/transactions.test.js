@@ -132,4 +132,13 @@ describe("Transactions Integration Tests", () => {
     expect(response.body[0].acc_id).toBe(account.id);
     done();
   });
+
+  it("Should delete a transaction", async (done) => {
+    const res = await request(app)
+      .delete(`/transactions/${userTransaction[0].id}`)
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(res.status).toBe(204);
+    done();
+  });
 });
