@@ -133,6 +133,16 @@ describe("Transactions Integration Tests", () => {
     done();
   });
 
+  it("Should return a transaction by id", async (done) => {
+    const response = await request(app)
+      .get(`/transactions/${userTransaction[0].id}`)
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body[0].description).toBe("User Transaction #1");
+    done();
+  });
+
   it("Should delete a transaction", async (done) => {
     const res = await request(app)
       .delete(`/transactions/${userTransaction[0].id}`)

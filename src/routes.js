@@ -30,7 +30,8 @@ routes.put("/accounts/:id", AccountsController.update);
 routes.delete("/accounts/:id", AccountsController.delete);
 
 routes.get("/transactions", TransactionsController.getAll);
-routes.get("/user/transactions", TransactionsController.getById);
+routes.get("/user/transactions", TransactionsController.getUserTransactions);
+routes.get("/transactions/:id", TransactionsController.getById);
 routes.post("/transactions", TransactionsController.create);
 routes.delete("/transactions/:id", TransactionsController.delete);
 

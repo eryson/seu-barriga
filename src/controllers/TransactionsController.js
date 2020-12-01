@@ -11,6 +11,30 @@ class UsersController {
 
   async getById(req, res) {
     try {
+      const { id } = req.params;
+      const { authenticatedUserId } = req;
+
+      const isUserTransactions = await knex("transactions")
+        .join("accounts", "accounts.id", "acc_id")
+        .where({ "accounts.user_id": authenticatedUserId })
+        .select();
+
+      if (!isUserTransactions) {
+        return res
+          .status(403)
+          .json({ error: "Request not allowed for this user." });
+      }
+
+      const transaction = await knex("transactions").where({ id: id }).select();
+
+      return res.status(200).json(transaction);
+    } catch (error) {
+      return res.status(400).json(error.message);
+    }
+  }
+
+  async getUserTransactions(req, res) {
+    try {
       const { authenticatedUserId } = req;
 
       const userTransactions = await knex("transactions")
