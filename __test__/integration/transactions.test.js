@@ -147,7 +147,6 @@ describe("Transactions Integration Tests", () => {
     const response = await request(app)
       .get(`/transactions/${userTransaction[0].id}`)
       .set("Authorization", `Bearer ${secondaryUserToken}`);
-    // .set("Authorization", `Bearer ${userToken}`);
 
     expect(response.status).toBe(403);
     expect(response.body.error).toBe("Request not allowed for this user.");
@@ -165,6 +164,31 @@ describe("Transactions Integration Tests", () => {
 
     expect(response.status).toBe(200);
     expect(response.body[0].description).toBe("Update User Transaction #1");
+    done();
+  });
+
+  it("Should not update another user's transactions", async (done) => {
+    const response = await request(app)
+      .put(`/transactions/${userTransaction[0].id}`)
+      .send({
+        description: "Not Update User Transaction #1",
+      })
+      .set("Authorization", `Bearer ${secondaryUserToken}`);
+
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe("Request not allowed for this user.");
+
+    done();
+  });
+
+  it("Should not delete another user's transactions", async (done) => {
+    const response = await request(app)
+      .delete(`/transactions/${userTransaction[0].id}`)
+      .set("Authorization", `Bearer ${secondaryUserToken}`);
+
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe("Request not allowed for this user.");
+
     done();
   });
 
