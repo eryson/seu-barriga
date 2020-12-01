@@ -91,6 +91,7 @@ class UsersController {
       const user = await knex("users")
         .where({ id: id })
         .update({ ...data });
+
       return res.status(200).json(user);
     } catch (error) {
       return res.status(400).json(error.message);

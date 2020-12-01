@@ -33,6 +33,7 @@ routes.get("/transactions", TransactionsController.getAll);
 routes.get("/user/transactions", TransactionsController.getUserTransactions);
 routes.get("/transactions/:id", TransactionsController.getById);
 routes.post("/transactions", TransactionsController.create);
+routes.put("/transactions/:id", TransactionsController.update);
 routes.delete("/transactions/:id", TransactionsController.delete);
 
 export default routes;

@@ -76,7 +76,35 @@ class UsersController {
 
   async update(req, res) {
     try {
-      return res.status(200).json("update");
+      const { id } = req.params;
+      const { description, date, ammount, type, acc_id } = req.body;
+      const { authenticatedUserId } = req;
+
+      const isUserTransactions = await knex("transactions")
+        .join("accounts", "accounts.id", "acc_id")
+        .where({ "accounts.user_id": authenticatedUserId })
+        .select();
+
+      if (!isUserTransactions) {
+        return res
+          .status(403)
+          .json({ error: "Request not allowed for this user." });
+      }
+
+      if (!description && !date && !ammount && !type && !acc_id) {
+        return res
+          .status(400)
+          .json({ error: "Data is missing for transaction update." });
+      }
+
+      const data = req.body;
+
+      const transaction = await knex("transactions")
+        .where({ id: id })
+        .update({ ...data })
+        .returning(["id", "description", "date", "ammount", "type", "acc_id"]);
+
+      return res.status(200).json(transaction);
     } catch (error) {
       return res.status(400).json(error.message);
     }
