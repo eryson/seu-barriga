@@ -192,6 +192,17 @@ describe("Transactions Integration Tests", () => {
     done();
   });
 
+  it("Should not list another user's transfers", async (done) => {
+    const response = await request(app)
+      .get(`/transfers/${userTransfer[0].id}`)
+      .set("Authorization", `Bearer ${secondaryUserToken}`);
+
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe("Request not allowed for this user.");
+
+    done();
+  });
+
   it("Should delete a transfer", async (done) => {
     const res = await request(app)
       .delete(`/transfers/${userTransfer[0].id}`)
