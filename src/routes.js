@@ -41,6 +41,7 @@ routes.get("/transfers", TransfersController.getAll);
 routes.get("/user/transfers", TransfersController.getUserTransfers);
 routes.get("/transfers/:id", TransfersController.getById);
 routes.post("/transfers", TransfersController.create);
+routes.put("/transfers/:id", TransfersController.update);
 routes.delete("/transfers/:id", TransfersController.delete);
 
 export default routes;

@@ -199,7 +199,19 @@ describe("Transactions Integration Tests", () => {
 
     expect(response.status).toBe(403);
     expect(response.body.error).toBe("Request not allowed for this user.");
+    done();
+  });
 
+  it("Should update a transfer by id", async (done) => {
+    const response = await request(app)
+      .put(`/transfers/${userTransfer[0].id}`)
+      .send({
+        description: "Update User Transfer #1",
+      })
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body[0].description).toBe("Update User Transfer #1");
     done();
   });
 
