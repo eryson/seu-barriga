@@ -13,6 +13,7 @@ let userTransaction;
 let secondaryTransaction;
 let transfer;
 let secondaryTransfer;
+let userTransfer;
 
 describe("Transactions Integration Tests", () => {
   beforeAll(async (done) => {
@@ -140,6 +141,34 @@ describe("Transactions Integration Tests", () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(1);
     expect(response.body[0].description).toBe("Transfer #1");
+    done();
+  });
+
+  it("Should create a transfer", async (done) => {
+    const response = await request(app)
+      .post("/transfers")
+      .send({
+        description: "User Transfer #1",
+        date: new Date(),
+        ammount: 10,
+        acc_ori_id: account.id,
+        acc_dest_id: secondaryAccount.id,
+        user_id: user.id,
+      })
+      .set("Authorization", `Bearer ${userToken}`);
+
+    userTransfer = response.body;
+    expect(response.status).toBe(201);
+    expect(response.body[0].user_id).toBe(user.id);
+    done();
+  });
+
+  it("Should delete a transfer", async (done) => {
+    const res = await request(app)
+      .delete(`/transfers/${userTransfer[0].id}`)
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(res.status).toBe(204);
     done();
   });
 });

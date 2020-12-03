@@ -39,5 +39,7 @@ routes.delete("/transactions/:id", TransactionsController.delete);
 
 routes.get("/transfers", TransfersController.getAll);
 routes.get("/user/transfers", TransfersController.getUserTransfers);
+routes.post("/transfers", TransfersController.create);
+routes.delete("/transfers/:id", TransfersController.delete);
 
 export default routes;
