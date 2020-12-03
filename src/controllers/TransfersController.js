@@ -94,6 +94,32 @@ class TransfersController {
           "user_id",
         ]);
 
+      const incomingTransaction = {
+        description: `Incoming Transfer to acc_id ${acc_dest_id}`,
+        date: new Date(),
+        ammount: ammount,
+        type: "I",
+        acc_id: acc_dest_id,
+        transfer_id: transfer[0].id,
+      };
+
+      const outgoingTransaction = {
+        description: `Outgoing Transfer to acc_id ${acc_ori_id}`,
+        date: new Date(),
+        ammount: ammount,
+        type: "O",
+        acc_id: acc_ori_id,
+        transfer_id: transfer[0].id,
+      };
+
+      await knex("transactions").insert({
+        ...incomingTransaction,
+      });
+
+      await knex("transactions").insert({
+        ...outgoingTransaction,
+      });
+
       return res.status(201).json(transfer);
     } catch (error) {
       return res.status(400).json(error.message);
@@ -180,9 +206,9 @@ class TransfersController {
           .json({ error: "Request not allowed for this user." });
       }
 
-      const transfer = await knex("transfers").where({ id: id }).delete();
+      await knex("transfers").where({ id: id }).delete();
 
-      return res.status(204).json(transfer);
+      return res.status(204);
     } catch (error) {
       return res.status(400).json(error.message);
     }

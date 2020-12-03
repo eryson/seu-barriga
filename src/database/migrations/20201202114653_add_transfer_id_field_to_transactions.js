@@ -1,6 +1,10 @@
 exports.up = function (knex) {
   return knex.schema.table("transactions", function (t) {
-    t.integer("transfer_id").references("id").inTable("transfers");
+    t.integer("transfer_id")
+      .references("id")
+      .inTable("transfers")
+      .onUpdate("CASCADE")
+      .onDelete("CASCADE");
   });
 };
 
