@@ -5,6 +5,7 @@ import UsersController from "./controllers/UsersController";
 import AccountsController from "./controllers/AccountsController";
 import AuthController from "./controllers/AuthController";
 import TransactionsController from "./controllers/TransactionsController";
+import TransfersController from "./controllers/TransfersController";
 
 const routes = new Router();
 
@@ -35,5 +36,8 @@ routes.get("/transactions/:id", TransactionsController.getById);
 routes.post("/transactions", TransactionsController.create);
 routes.put("/transactions/:id", TransactionsController.update);
 routes.delete("/transactions/:id", TransactionsController.delete);
+
+routes.get("/transfers", TransfersController.getAll);
+routes.get("/user/transfers", TransfersController.getUserTransfers);
 
 export default routes;

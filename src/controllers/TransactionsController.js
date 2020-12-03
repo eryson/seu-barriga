@@ -1,6 +1,6 @@
 import knex from "../database";
 
-class UsersController {
+class TransactionsController {
   async getAll(req, res) {
     try {
       return res.status(200).json("getAll");
@@ -156,4 +156,4 @@ class UsersController {
   }
 }
 
-export default new UsersController();
+export default new TransactionsController();
