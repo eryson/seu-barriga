@@ -9,43 +9,43 @@ class TransfersController {
     }
   }
 
-  //   async getById(req, res) {
-  //     try {
-  //       const { id } = req.params;
-  //       const { authenticatedUserId } = req;
+  async getById(req, res) {
+    try {
+      const { id } = req.params;
+      const { authenticatedUserId } = req;
 
-  //       const isUserTransactions = await knex("transactions")
-  //         .join("accounts", "accounts.id", "acc_id")
-  //         .where({
-  //           "accounts.user_id": authenticatedUserId,
-  //           "transactions.id": id,
-  //         })
-  //         .select();
+      const isUserTransfers = await knex("transfers")
+        .join("users", "users.id", "user_id")
+        .where({
+          "users.id": authenticatedUserId,
+          "transfers.id": id,
+        })
+        .select();
 
-  //       if (isUserTransactions.length === 0) {
-  //         return res
-  //           .status(403)
-  //           .json({ error: "Request not allowed for this user." });
-  //       }
+      if (isUserTransfers.length === 0) {
+        return res
+          .status(403)
+          .json({ error: "Request not allowed for this user." });
+      }
 
-  //       const transaction = await knex("transactions").where({ id: id }).select();
+      const transfer = await knex("transfers").where({ id: id }).select();
 
-  //       return res.status(200).json(transaction);
-  //     } catch (error) {
-  //       return res.status(400).json(error.message);
-  //     }
-  //   }
+      return res.status(200).json(transfer);
+    } catch (error) {
+      return res.status(400).json(error.message);
+    }
+  }
 
   async getUserTransfers(req, res) {
     try {
       const { authenticatedUserId } = req;
 
-      const userTransactions = await knex("transfers")
+      const userTransfers = await knex("transfers")
         .join("users", "users.id", "user_id")
         .where({ "users.id": authenticatedUserId })
         .select();
 
-      return res.status(200).json(userTransactions);
+      return res.status(200).json(userTransfers);
     } catch (error) {
       return res.status(400).json(error.message);
     }
@@ -72,7 +72,7 @@ class TransfersController {
       ) {
         return res
           .status(400)
-          .json({ error: "Data is missing for creating the transaction." });
+          .json({ error: "Data is missing for creating the transfer." });
       }
 
       const transfer = await knex("transfers")

@@ -163,6 +163,35 @@ describe("Transactions Integration Tests", () => {
     done();
   });
 
+  it("Should not create a transfer without description", async (done) => {
+    const response = await request(app)
+      .post("/transfers")
+      .send({
+        date: new Date(),
+        ammount: 10,
+        acc_ori_id: account.id,
+        acc_dest_id: secondaryAccount.id,
+        user_id: user.id,
+      })
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe(
+      "Data is missing for creating the transfer."
+    );
+    done();
+  });
+
+  it("Should return a transfer by id", async (done) => {
+    const response = await request(app)
+      .get(`/transfers/${userTransfer[0].id}`)
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body[0].description).toBe("User Transfer #1");
+    done();
+  });
+
   it("Should delete a transfer", async (done) => {
     const res = await request(app)
       .delete(`/transfers/${userTransfer[0].id}`)
